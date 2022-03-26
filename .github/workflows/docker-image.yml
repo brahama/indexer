@@ -15,12 +15,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag brahama/algo/indexer:$(date +%s)
+      run: docker build . --file Dockerfile --tag brahama/algo/indexer:$(git describe |cut -d '-' -f 1)
     - name: DockerHub Login
       uses: docker/login-action@v1 
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Docker Push
-      run: docker push brahama/algo/indexer:$(date +%s)
+      run: docker push brahama/algo/indexer:$(git describe |cut -d '-' -f 1)
       
