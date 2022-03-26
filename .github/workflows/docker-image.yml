@@ -23,7 +23,7 @@ jobs:
 
     - name: Git Describe
       run: |
-        git describe
+        git describe --tags --always
 
     #- name: Build the Docker image
     #  run: docker build . --file Dockerfile --tag brahama/algo/indexer:$(git describe |cut -d '-' -f 1)
