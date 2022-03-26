@@ -22,17 +22,18 @@ jobs:
         git config user.name "GitHub Actions Bot"
         git config user.email "<>"
 
-    - name: Git Describe
+    - name: Get Tag with Git Describe
+      id: get_tag
       run: |
-        git describe --tags --always
+        echo ::set-output name=RELEASE::$(git describe --tags --always|cut -d '-' -f 1)
 
-    #- name: Build the Docker image
-    #  run: docker build . --file Dockerfile --tag brahama/algo/indexer:$(git describe |cut -d '-' -f 1)
-    #- name: DockerHub Login
-    #  uses: docker/login-action@v1 
-    #  with:
-    #    username: ${{ secrets.DOCKERHUB_USERNAME }}
-    #    password: ${{ secrets.DOCKERHUB_TOKEN }}
-    #- name: Docker Push
-    #  run: docker push brahama/algo/indexer:$(git describe |cut -d '-' -f 1)
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag brahama/algo/indexer:${{steps.get_tag.outputs.RELEASE}}
+    - name: DockerHub Login
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Docker Push
+      run: docker push brahama/algo/indexer:${{steps.get_tag.outputs.RELEASE}}
       
